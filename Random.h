@@ -1,5 +1,5 @@
-#ifndef RANDOM_H
-#define RANDOM_H
+#ifndef BIRANDOM_H
+#define BIRANDOM_H
 
 	#include <stdint.h>
 	#include <assert.h>
@@ -15,14 +15,11 @@
 		uint64_t seed;
 	};
 
-	inline uint64_t Random_Consume(union Random *a) {
+	uint64_t BiRandom(union Random *a) {
 		union {
 			__m128i i;
 			uint64_t U, L;
 		} seed;
-
-		static_assert(sizeof(seed) == 16);
-
 		seed.i = _mm_set1_epi64x((int64_t) a->seed);
 		seed.i = _mm_aesenc_si128(seed.i, _mm_set1_epi32((int) 0xDEADBEEF));
 		seed.i = _mm_aesenc_si128(seed.i, _mm_set1_epi32((int) 0xDEADBEEF));
@@ -30,33 +27,37 @@
 		return a->seed;
 	}
 
-	inline uint64_t Random_Consume_Range(union Random *a, uint64_t max) {
+	uint64_t BiRandom_Range(union Random *a, uint64_t max) {
 		assert(max > 0);
 		uint64_t n = 0;
 
 		for(;;) { // Better than modulus
-			n = Random_Consume(a);
+			n = BiRandom(a);
 			if(n < UINT64_MAX - (UINT64_MAX % max)) break;
 		}
 
 		return (n % max);
 	}
 
-	inline uint64_t Random_Consume_Between(union Random *a, uint64_t min, uint64_t max) {
+	uint64_t BiRandom_Between(union Random *a, uint64_t min, uint64_t max) {
 		assert(max > min);
-		return Random_Consume_Range(a, max - min) + min;
+		return BiRandom_Range(a, max - min) + min;
 	}
 
-	inline double Random_Consume_Uniform(union Random *a) { // Value between 0.0 and 1.0, mean of 0.5
-		static const double max = (double) UINT64_MAX;
-		return ((double) Random_Consume(a) / max);
+	double BiRandom_Uniform(union Random *a) { // Value between 0.0 and 1.0, mean of 0.5
+		union {
+			uint64_t u64;
+			double f64;
+		} map;
+		map.u64 = 0x3FF0000000000000ULL | (BiRandom(a) >> 12);
+		return (map.f64 - 1.0);
 	}
 
-	inline double Random_Consume_Gaussian(union Random *a) { // Normal value, mean of 0.0, s.d. of 1.0 (values cannot exceed 6.0 or -6.0)
+	double BiRandom_Gaussian(union Random *a) { // Normal value, mean of 0.0, s.d. of 1.0 (values cannot exceed 6.0 or -6.0)
 		double n = 0.0;
 
 		for(char i = 0; i < 12; i++) {
-			n += Random_Consume_Uniform(a);
+			n += BiRandom_Uniform(a);
 		}
 		n -= 6.0;
 
