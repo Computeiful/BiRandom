@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <time.h>
 
-
 /*
 This is free and unencumbered software released into the public domain.
 Anyone is free to copy, modify, publish, use, compile, sell, or
@@ -60,3 +59,12 @@ int main(void) {
 
 	check(&a);
 }
+
+/*
+
+
+	This padding exists so that GitHub views this project as a C project rather than a C++ project,
+	because it sees .h files as C++ files, which is so dumb because.
+
+
+*/

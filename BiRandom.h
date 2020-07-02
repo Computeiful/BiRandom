@@ -15,7 +15,7 @@
 		uint64_t seed;
 	};
 
-	uint64_t BiRandom(union BiRandom *a) {
+	static uint64_t BiRandom(union BiRandom *a) {
 		union {
 			__m128i i;
 			uint64_t U, L;
@@ -27,7 +27,7 @@
 		return a->seed;
 	}
 
-	uint64_t BiRandom_Range(union BiRandom *a, uint64_t max) {
+	static uint64_t BiRandom_Range(union BiRandom *a, uint64_t max) {
 		assert(max > 0);
 		uint64_t n = 0;
 
@@ -39,12 +39,12 @@
 		return (n % max);
 	}
 
-	uint64_t BiRandom_Between(union BiRandom *a, uint64_t min, uint64_t max) {
+	static uint64_t BiRandom_Between(union BiRandom *a, uint64_t min, uint64_t max) {
 		assert(max > min);
 		return BiRandom_Range(a, max - min) + min;
 	}
 
-	double BiRandom_Uniform(union BiRandom *a) { // Value between 0.0 and 1.0, mean of 0.5
+	static double BiRandom_Uniform(union BiRandom *a) { // Value between 0.0 and 1.0, mean of 0.5
 		union {
 			uint64_t u64;
 			double f64;
@@ -53,7 +53,7 @@
 		return (map.f64 - 1.0);
 	}
 
-	double BiRandom_Gaussian(union BiRandom *a) { // Normal value, mean of 0.0, s.d. of 1.0 (values cannot exceed 6.0 or -6.0)
+	static double BiRandom_Gaussian(union BiRandom *a) { // Normal value, mean of 0.0, s.d. of 1.0 (values cannot exceed 6.0 or -6.0)
 		double n = 0.0;
 
 		for(char i = 0; i < 12; i++) {
