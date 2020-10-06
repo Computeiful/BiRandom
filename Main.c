@@ -57,14 +57,14 @@ int main(void) {
 		printf("%08X\n", (int) BiRandom(&a));
 	}
 
-	check(&a);
+	check(&a); // Test
 }
 
 /*
 
 
 	This padding exists so that GitHub views this project as a C project rather than a C++ project,
-	because it sees .h files as C++ files, which is so dumb because.
+	because it sees .h files as C++ files, which is so dumb.
 
 
 */
