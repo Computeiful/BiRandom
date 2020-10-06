@@ -3,8 +3,8 @@ This PRNG uses Bijective AES CPU encryption to produce good pseudo-random number
 
 See `Main.c` for a usage example.
 
-This generator makes use of the AES instructions on modern CPUs - and therefore must be compiled with `-maes` on gcc:
+This PRNG makes use of the AES encryption instructions found on most modern CPUs - and therefore must be compiled with `-maes` on gcc:
 
-`gcc -O3 -std=c99 -maes Main.c`
+Example: `gcc -O3 -std=c99 -maes Main.c`
 
 For even faster PRNG see [here](https://github.com/Computeiful/QuickRandom).
